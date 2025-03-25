@@ -1,0 +1,15 @@
+/* style.css (esempio) */
+body {
+    font-family: sans-serif;
+}
+ul {
+    list-style: none;
+    padding: 0;
+}
+li {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+/* Aggiungi altri stili secondo necessità */

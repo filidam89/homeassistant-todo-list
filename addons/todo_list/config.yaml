@@ -1,0 +1,13 @@
+name: To-Do List Add-on
+version: "1.0.0"
+slug: todo_list
+description: Un add-on per gestire una lista di task ripetibili con assegnazione a persone e punteggi.
+arch:
+  - amd64
+  - armv7
+  - aarch64
+webui: "[PROTO:ssl]://[HOST]:[PORT:8123]/todo_list"
+ports:
+  8099/tcp: 8099  # Porta per l'API e l'interfaccia web
+options: {} #puoi mettere opzioni di configurazione se servono
+schema: {} #e il loro schema di validazione

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>To-Do List</h1>
+
+    <div id="tasks">
+        <h2>Tasks</h2>
+        <ul id="taskList">
+          <!-- I task verranno inseriti qui dinamicamente con JavaScript -->
+        </ul>
+    </div>
+     <a href="/create_task">Crea Nuovo Task</a>
+
+     <div id="scores">
+       <h2>Punteggi</h2>
+       <p>Differenza: <span id="scoreDifference"></span></p>
+    </div>
+    <script>
+        async function loadTasks() {
+            const response = await fetch('/api/tasks');
+            const tasks = await response.json();
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = ''; // Pulisci la lista esistente
+
+            tasks.forEach(task => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${task.name} - ${task.assigned_to} - ${task.completed ? 'Completato' : 'Da fare'}`;
+
+                const completeButton = document.createElement('button');
+                completeButton.textContent = 'Completa';
+                completeButton.onclick = () => completeTask(task.id);
+                listItem.appendChild(completeButton);
+
+                taskList.appendChild(listItem);
+            });
+        }
+
+        async function loadScores() {
+          const response = await fetch('/api/scores');
+          const scores = await response.json();
+          document.getElementById('scoreDifference').textContent = scores.difference;
+        }
+
+
+        async function completeTask(taskId) {
+            const completedBy = prompt("Chi ha completato il task? (A, B, o AB)");
+            if (completedBy && (completedBy === 'A' || completedBy === 'B' || completedBy === 'AB')) {
+                try {
+                    const response = await fetch(`/api/tasks/${taskId}/complete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ completedBy: completedBy })
+                    });
+
+                    if (response.ok) {
+                        loadTasks();  // Ricarica i task
+                        loadScores(); // Ricarica i punteggi
+                    } else {
+                        alert("Errore nel completamento del task.");
+                    }
+                } catch (error) {
+                    alert("Errore di rete: " + error);
+                }
+            } else {
+                alert("Input non valido");
+            }
+        }
+
+
+        // Carica i task e i punteggi all'avvio
+        loadTasks();
+        loadScores();
+    </script>
+
+</body>
+</html>
